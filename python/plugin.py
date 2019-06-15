@@ -56,7 +56,8 @@ thumbnails = {
     'swift': 'Swift',
     'lua': 'Lua',
     'jl': 'Julia',
-    'dart': 'Dart'
+    'dart': 'Dart',
+    'pp': 'Pascal',
 }
 
 
