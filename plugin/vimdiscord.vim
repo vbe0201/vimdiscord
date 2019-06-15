@@ -8,6 +8,7 @@ endif
 if exists('g:vimdiscord')
     finish
 endif
+let g:vimdiscord = 1
 
 let s:plugin_root = fnamemodify(resolve(expand('<sfile>:p')), ':h')
 
@@ -20,6 +21,7 @@ python3 << EOF
 import os
 import sys
 import threading
+import time
 import vim
 
 plugin_root = vim.eval('s:plugin_root')
@@ -34,9 +36,13 @@ plugin.logger.info('Connection successfully established.')
 
 activity = plugin.BASE_ACTIVITY
 plugin.rpc.set_activity(connection, activity)
+EOF
+endfunction
 
-thread = threading.Thread(target=plugin.run, args=(connection,))
-thread.start()
+function! vimdiscord#update()
+python3 << EOF
+plugin.update_presence(connection)
+time.sleep(15)
 EOF
 endfunction
 
@@ -46,6 +52,9 @@ plugin.rpc.connection_closed = True
 EOF
 endfunction
 
-let g:vimdiscord = 1
+command! -nargs=0 UpdatePresence call vimdiscord#update()
 
-call vimdiscord#run()
+augroup VimdiscordAutoStart
+    autocmd!
+    autocmd BufNewFile,BufRead,BufEnter * :call vimdiscord#update()
+augroup END

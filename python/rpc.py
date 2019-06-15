@@ -8,6 +8,7 @@ import struct
 import uuid
 
 logger = logging.getLogger(__name__)
+logger.setLevel('info')
 
 connection_closed = True
 
@@ -66,10 +67,9 @@ def _get_pipe_path(i):
 def send(connection, data, op=Opcodes.FRAME):
     data = json.dumps(data, separators=(',', ':'))
     data = data.encode('utf-8')
-    logger.info('Sending %s', data)
+    logger.debug('Sending %s', data)
     header = struct.pack('<II', op.value, len(data))
 
-    print(connection)
     _write(connection, header)
     _write(connection, data)
 
@@ -79,7 +79,7 @@ def receive(connection):
     payload = _receive_exactly(connection, length)
     data = json.loads(payload.decode('utf-8'))
 
-    logger.info('Received %s', data)
+    logger.debug('Received %s', data)
     return op, data
 
 
@@ -104,7 +104,7 @@ def connect():
     if not connection_closed:
         return
 
-    logger.info('Attempting to connect to Discord RPC...')
+    logger.debug('Attempting to connect to Discord RPC...')
 
     if not ON_WINDOWS:
         _socket = socket.socket(socket.AF_UNIX)
@@ -140,7 +140,7 @@ def connect():
 
 def perform_handshake(connection, client_id):
     op, data = send_receive(connection, {'v': 1, 'client_id': client_id}, Opcodes.HANDSHAKE)
-    if op == Opcodes.FRAME and data['cmd'] == 'DISPATCH' and data['evt'] == 'READY':
+    if op == Opcodes.FRAME.value and data['cmd'] == 'DISPATCH' and data['evt'] == 'READY':
         return
     else:
         if op == Opcodes.CLOSE.value:
@@ -152,7 +152,7 @@ def perform_handshake(connection, client_id):
 def close(connection):
     global connection_closed
 
-    logger.info('Closing connection.')
+    logger.debug('Closing connection.')
     try:
         send(connection, {}, Opcodes.CLOSE)
     finally:

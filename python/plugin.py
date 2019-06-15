@@ -4,7 +4,8 @@ import vim
 
 import rpc
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
+logger.setLevel('info')
 
 START_TIME = int(time.time())
 
@@ -71,32 +72,30 @@ def get_cwd():
     return vim.eval('getcwd()')
 
 
-def run(connection):
-    while not rpc.connection_closed:
-        time.sleep(10)
+def update_presence(connection):
+    if rpc.connection_closed:
+        rpc.close(connection)
+        logger.error('Connection to Discord closed.')
+        return
 
-        activity = BASE_ACTIVITY
-        filename = get_filename()
-        cwd = get_cwd()
-        if not filename or not cwd:
-            continue
+    activity = BASE_ACTIVITY
+    filename = get_filename()
+    cwd = get_cwd()
+    if not filename or not cwd:
+        return
     
-        activity['details'] = 'Editing ' + get_filename()
-        activity['assets']['small_text'] = 'Working on project ' + get_cwd()
+    activity['details'] = 'Editing ' + filename
+    activity['assets']['small_text'] = 'Working on project ' + cwd
 
-        if get_extension() and get_extension() in has_thumbnail:
-            activity['assets']['large_image'] = get_extension()
-        else:
-            activity['assets']['large_image'] = 'unknown'
+    extension = get_extension()
+    if extension and extension in has_thumbnail:
+        activity['assets']['large_image'] = get_extension()
+    else:
+        activity['assets']['large_image'] = 'unknown'
 
-        try:
-            rpc.set_activity(connection, activity)
-            time.sleep(10)
-        except NameError:
-            logger.error('Discord is not running!')
-            break
-        except BrokenPipeError:
-            logger.error('Connection to Discord lost!')
-            break
-
-    rpc.close(connection)
+    try:
+        rpc.set_activity(connection, activity)
+    except NameError:
+        logger.error('Discord is not running!')
+    except BrokenPipeError:
+        logger.error('Connection to Discord lost!')
