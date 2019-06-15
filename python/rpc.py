@@ -8,7 +8,7 @@ import struct
 import uuid
 
 logger = logging.getLogger(__name__)
-logger.setLevel('info')
+logger.setLevel(20)
 
 connection_closed = True
 

@@ -21,7 +21,6 @@ python3 << EOF
 import os
 import sys
 import threading
-import time
 import vim
 
 plugin_root = vim.eval('s:plugin_root')
@@ -42,7 +41,6 @@ endfunction
 function! vimdiscord#update()
 python3 << EOF
 plugin.update_presence(connection)
-time.sleep(15)
 EOF
 endfunction
 
@@ -52,6 +50,9 @@ plugin.rpc.connection_closed = True
 EOF
 endfunction
 
+call vimdiscord#run()
+
+command! VimdiscordVersion call vimdiscord#version()
 command! -nargs=0 UpdatePresence call vimdiscord#update()
 
 augroup VimdiscordAutoStart

@@ -5,7 +5,7 @@ import vim
 import rpc
 
 logger = logging.getLogger(__name__)
-logger.setLevel('info')
+logger.setLevel(20)
 
 START_TIME = int(time.time())
 
@@ -24,40 +24,40 @@ BASE_ACTIVITY = {
 
 CLIENT_ID = '589111267986243624'
 
-has_thumbnail = [
-    'html',
-    'css',
-    'js',
-    'php',
-    'scss',
-    'py',
-    'rs',
-    'c',
-    'h',
-    'cpp',
-    'hpp',
-    'cxx',
-    'cc',
-    'cs',
-    'java',
-    'ex',
-    'md',
-    'ts',
-    'go',
-    'kt',
-    'kts',
-    'cr',
-    'rb',
-    'clj',
-    'hs',
-    'json',
-    'vue',
-    'groovy',
-    'swift',
-    'lua',
-    'jl',
-    'dart',
-]
+thumbnails = {
+    'html': 'HTML',
+    'css': 'CSS',
+    'js': 'JavaScript',
+    'php': 'PHP',
+    'scss': 'Sass',
+    'py': 'Python',
+    'rs': 'Rust',
+    'c': 'C',
+    'h': 'C Header',
+    'cpp': 'C++',
+    'hpp': 'C++ Header',
+    'cxx': 'C++',
+    'cc': 'C++',
+    'cs': 'C#',
+    'java': 'Java',
+    'ex': 'Elixir',
+    'md': 'Markdown',
+    'ts': 'TypeScript',
+    'go': 'Go',
+    'kt': 'Kotlin',
+    'kts': 'Kotlin',
+    'cr': 'Crystal',
+    'rb': 'Ruby',
+    'clj': 'Clojure',
+    'hs': 'Haskell',
+    'json': 'JSON',
+    'vue': 'Vue',
+    'groovy': 'Groovy',
+    'swift': 'Swift',
+    'lua': 'Lua',
+    'jl': 'Julia',
+    'dart': 'Dart'
+}
 
 
 def get_filename():
@@ -88,8 +88,9 @@ def update_presence(connection):
     activity['assets']['small_text'] = 'Working on project ' + cwd
 
     extension = get_extension()
-    if extension and extension in has_thumbnail:
-        activity['assets']['large_image'] = get_extension()
+    if extension and extension in thumbnails.keys():
+        activity['assets']['large_image'] = extension
+        activity['assets']['large_text'] = 'Editing a {} file'.format(thumbnails[extension])
     else:
         activity['assets']['large_image'] = 'unknown'
 
