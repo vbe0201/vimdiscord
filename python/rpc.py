@@ -122,7 +122,6 @@ def connect():
                 return pipe
         else:
             path = _get_pipe_path(i)
-            print(path)
 
             if not os.path.exists(path):
                 continue
