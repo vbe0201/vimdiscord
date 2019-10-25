@@ -7,13 +7,13 @@ import rpc
 logger = logging.getLogger(__name__)
 logger.setLevel(20)
 
-START_TIME = int(time.time())
+#START_TIME = int(time.time())
 
 BASE_ACTIVITY = {
     'details': 'Idle',
-    'timestamps': {
-        'start': START_TIME
-     },
+    #'timestamps': {
+    #    'start': START_TIME
+    # },
     'assets': {
         'large_text': 'Vim',
         'large_image': 'vim_logo',
@@ -39,6 +39,7 @@ thumbnails = {
     'cxx': 'C++',
     'cc': 'C++',
     'cs': 'C#',
+    'capnp': "Cap'n' Proto",
     'java': 'Java',
     'ex': 'Elixir',
     'md': 'Markdown',
@@ -85,14 +86,16 @@ def update_presence(connection):
     if not filename or not cwd:
         return
     
-    activity['details'] = 'Editing ' + filename
+    activity['details'] = 'Editing a .' + get_extension() +' file'
     activity['assets']['small_text'] = 'Working on project ' + cwd
 
     extension = get_extension()
     if extension and extension in thumbnails.keys():
         activity['assets']['large_image'] = extension
         activity['assets']['large_text'] = 'Editing a {} file'.format(thumbnails[extension])
+        activity['details'] = 'Editing a {} file'.format(thumbnails[extension])
     else:
+        activity['details'] = 'Editing a .{} file'.format(extension)
         activity['assets']['large_image'] = 'unknown'
 
     try:
