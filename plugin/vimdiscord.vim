@@ -30,17 +30,20 @@ sys.path.insert(0, python_root)
 import plugin
 
 connection = plugin.rpc.connect()
-plugin.rpc.perform_handshake(connection, plugin.CLIENT_ID)
-plugin.logger.info('Connection successfully established.')
+if connection is not None:
+    plugin.rpc.perform_handshake(connection, plugin.CLIENT_ID)
+    plugin.logger.info('Connection successfully established.')
 
-activity = plugin.BASE_ACTIVITY
-plugin.rpc.set_activity(connection, activity)
+    activity = plugin.BASE_ACTIVITY
+    plugin.rpc.set_activity(connection, activity)
 EOF
 endfunction
 
 function! vimdiscord#update()
 python3 << EOF
-plugin.update_presence(connection)
+if connection is not None:
+    import plugin
+    plugin.update_presence(connection)
 EOF
 endfunction
 
