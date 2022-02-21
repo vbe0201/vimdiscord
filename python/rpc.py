@@ -14,7 +14,7 @@ logger.setLevel(20)
 connection_closed = True
 
 ON_WINDOWS = sys.platform == 'win32'
-PIPE_PATH = R'\\?\pipe\discord-ipc-{}' if ON_WINDOWS else R'snap.discord/discord-ipc-{}'
+PIPE_PATH = R'\\?\pipe\discord-ipc-{}' if ON_WINDOWS else R'discord-ipc-{}'
 
 class Opcodes(enum.Enum):
     HANDSHAKE = 0
